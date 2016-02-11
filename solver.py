@@ -4,11 +4,6 @@ from sys import argv
 import math
 from models import ActionType, Drone, Action
 
-data = parse(argv[1])
-drones = [Drone(data.warehouses[0].row, data.warehouses[0].col, 0) for i in range(data.n_drones)]
-
-next_turn = 0
-
 def distance(x, y):
     return math.sqrt((y[0] - x[0])**2 + (y[1] - x[1])**2)
 
@@ -16,6 +11,11 @@ def order_score(t, T):
     return (T - t) / (T * 100)
 
 def score(actions):
+    data = parse(argv[1])
+    drones = [Drone(data.warehouses[0].row, data.warehouses[0].col, 0) for i in range(data.n_drones)]
+
+    next_turn = 0
+
     res = 0
     for i in range(data.deadline):
         to_remove = []

@@ -13,8 +13,6 @@ def distance(x1, y1, x2, y2):
 
 
 def simulate(P):
-    actions = []
-
     r, c = P.warehouses[0].col, P.warehouses[0].row
     W = deepcopy(P.warehouses)
     drones = [Drone(i, r, c, 0) for i in range(P.n_drones)]
@@ -22,6 +20,8 @@ def simulate(P):
     for o in P.orders:
         for p in o.products:
             products.append((o, p))
+
+    actions = {}
 
     def where(product_id, r, c):
         """Return the nearest warehouse with product_id available"""
@@ -38,12 +38,12 @@ def simulate(P):
             w = where(p, d.row, d.col)
 
             # goto warehouse
-            busy = d.busy + distance(w.row, w.col, d.row, d.col)
-            actions.append(Action(d.id, ActionType.LOAD, p, w.id, 1))
+            b = d.busy + distance(w.row, w.col, d.row, d.col)
+            actions[i] = actions.get(i, []) + [Action(d.id, ActionType.LOAD, p, w.id, 1)]
 
             # goto dest
-            busy += distance(w.row, w.col, o.row, o.col)
-            actions.append(Action(d.id, ActionType.DELIVER, p, o.id, 1))
+            busy = b + distance(w.row, w.col, o.row, o.col)
+            actions[b] = actions.get(b, []) + [Action(d.id, ActionType.DELIVER, p, o.id, 1)]
 
             drones[d.id] = Drone(d.id, o.row, o.col, busy)
 
@@ -51,7 +51,7 @@ def simulate(P):
             wp[p] -= 1
             W[w.id] = Warehouse(w.id, w.row, w.col, wp)
 
-    return actions
+    return list(chain(*map(actions.__getitem__, sorted(actions.keys()))))
 
 if __name__ == "__main__":
     from sys import argv

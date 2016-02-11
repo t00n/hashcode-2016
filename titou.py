@@ -4,6 +4,7 @@ from models import *
 from itertools import chain
 from copy import deepcopy
 from math import sqrt, ceil
+from sys import stderr
 
 Drone = namedtuple('Drone', ['id', 'row', 'col', 'busy'])
 
@@ -13,6 +14,8 @@ def distance(x1, y1, x2, y2):
 
 
 def simulate(P):
+    print >>stderr, len(P.orders), "orders"
+
     r, c = P.warehouses[0].col, P.warehouses[0].row
     W = deepcopy(P.warehouses)
     drones = [Drone(i, r, c, 0) for i in range(P.n_drones)]
@@ -29,12 +32,12 @@ def simulate(P):
         return sorted(has_prod, key=lambda w: distance(r, c, w.row, w.col))[0]
 
     for i in range(P.deadline):
-        avail = filter(lambda x: x.busy <= i, drones)
+        avail = list(filter(lambda x: x.busy <= i, drones))
         for d in avail:
             if len(products) == 0:
                 break
             # find nearest WH with product
-            order, p = products.pop(0)
+            o, p = products.pop(0)
             w = where(p, d.row, d.col)
 
             # goto warehouse
@@ -55,4 +58,6 @@ def simulate(P):
 
 if __name__ == "__main__":
     from sys import argv
-    print simulate(parse(argv[1]))
+    r = simulate(parse(argv[1]))
+    print len(r)
+    print "\n".join(map(str, r))

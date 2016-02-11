@@ -3,12 +3,7 @@
 from sys import argv
 from collections import namedtuple
 
-Problem = namedtuple('Problem',
-    ['products', 'warehouses', 'orders', 'rows', 'cols',
-     'n_drones', 'deadline', 'max_payload'])
-Warehouse = namedtuple('Warehouse', ['row', 'col', 'products'])
-Order = namedtuple('Order', ['row', 'col', 'products'])
-
+from models import Action, Warehouse, Order, Problem 
 
 def parse(filename):
     with open(filename) as f:

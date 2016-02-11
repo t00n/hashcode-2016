@@ -29,12 +29,12 @@ def score(actions):
                     col = data.warehouses[action.dest].col
                 elif action.type == ActionType.DELIVER:
                     row = data.orders[action.dest].row
-                    col = data.warehouses[action.dest].col
+                    col = data.orders[action.dest].col
                 # if drone is at destination, execute action
                 if drone.row == row and drone.col == col:
                     drone.busy += 1
                     if action.type == ActionType.LOAD:
-                        data.warehouses[action.dest].products[action.item] -= 1
+                        data.warehouses[action.dest].products[action.item] -= action.number
                     elif action.type == ActionType.DELIVER:
                         data.orders[action.dest].products.remove(action.item)
                         if len(data.orders[action.dest].products) == 0:

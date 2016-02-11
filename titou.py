@@ -5,6 +5,7 @@ from itertools import chain
 from copy import deepcopy
 from math import sqrt, ceil
 from sys import stderr
+from solver import score
 
 Drone = namedtuple('Drone', ['id', 'row', 'col', 'busy'])
 
@@ -61,3 +62,4 @@ if __name__ == "__main__":
     r = simulate(parse(argv[1]))
     print len(r)
     print "\n".join(map(str, r))
+    # print >>stderr, score(r)

@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 from sys import argv
 from collections import namedtuple
 

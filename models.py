@@ -5,12 +5,16 @@ class ActionType:
     WAIT=3
 
 class Action:
-    def __init__(self, drone, type, item, dest, time):
+    def __init__(self, drone, type, item, dest, number):
         self.drone = drone
         self.type = type
         self.item = item
         self.dest = dest
-        self.time = time
+        self.number = number
+
+    def __str__(self):
+        t = 'L' if self.type == ActionType.LOAD else 'D' if self.type == ActionType.DELIVER else ""
+        return "%i %s %i %i %i" % (self.drone, t, self.dest, self.item, self.number)
 
 class Drone:
     def __init__(self, row, col, busy):

@@ -27,6 +27,25 @@ def simulate(P):
 
     actions = {}
 
+    def warehouse_with_prods(list_of_products):
+        grouped = {}
+        for p in list_of_products:
+            grouped[p] = grouped.get(p, 0) + 1
+
+        def f(w):
+            for p, num in grouped.iteritems():
+                if w.products[p] < num:
+                    return False
+            return True
+        return filter(f, W)
+
+    def products_in_order(order_id):
+        def f():
+            for p in products:
+                if p[0].id == order_id:
+                    yield p[1]
+        return list(f())
+
     def where(product_id, r, c):
         """Return the nearest warehouse with product_id available"""
         has_prod = filter(lambda w: w.products[product_id] > 0, W)
@@ -37,23 +56,42 @@ def simulate(P):
         for d in avail:
             if len(products) == 0:
                 break
+
             # find nearest WH with product
-            o, p = products.pop(0)
-            w = where(p, d.row, d.col)
+            o, first_prod = products.pop(0)
+
+            # Find other products in the same order, and their weights
+            in_order = products_in_order(o.id)
+            weights = map(P.products.__getitem__, in_order)
+
+            # Take all products the drone can carry
+            while weights and P.products[first_prod] + sum(weights) >= P.max_payload:
+                weights.pop()
+            in_order = in_order[:len(weights)]
+
+            # find a warehouse that has all the products
+            while in_order and len(warehouse_with_prods([first_prod] + in_order)) == 0:
+                in_order.pop()
+
+            this_payload = [first_prod] + in_order
+
+            w = warehouse_with_prods(this_payload)[0]
+
+            products = products[len(in_order):]
 
             # goto warehouse
             b = d.busy + distance(w.row, w.col, d.row, d.col)
-            actions[i] = actions.get(i, []) + [Action(d.id, ActionType.LOAD, p, w.id, 1)]
+            for p in this_payload:
+                actions[i] = actions.get(i, []) + [Action(d.id, ActionType.LOAD, p, w.id, 1)]
+                W[w.id].products[p] -= 1
+                assert W[w.id].products[p] >= 0
 
             # goto dest
             busy = b + distance(w.row, w.col, o.row, o.col)
-            actions[b] = actions.get(b, []) + [Action(d.id, ActionType.DELIVER, p, o.id, 1)]
+            for p in this_payload:
+                actions[b] = actions.get(b, []) + [Action(d.id, ActionType.DELIVER, p, o.id, 1)]
 
             drones[d.id] = Drone(d.id, o.row, o.col, busy)
-
-            wp = w.products
-            wp[p] -= 1
-            W[w.id] = Warehouse(w.id, w.row, w.col, wp)
 
     return list(chain(*map(actions.__getitem__, sorted(actions.keys()))))
 

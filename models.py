@@ -20,12 +20,14 @@ class Drone:
 
 class Warehouse:
     def __init__(self, id, row, col, products):
+        self.id = id
         self.row = row
         self.col = col
         self.products = products
 
 class Order:
     def __init__(self, id, row, col, products):
+        self.id = id
         self.row = row
         self.col = col
         self.products = products

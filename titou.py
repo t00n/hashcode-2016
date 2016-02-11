@@ -6,6 +6,7 @@ from copy import deepcopy
 from math import sqrt, ceil
 from sys import stderr
 from solver import score
+from random import shuffle
 
 Drone = namedtuple('Drone', ['id', 'row', 'col', 'busy'])
 
@@ -21,7 +22,11 @@ def simulate(P):
     W = deepcopy(P.warehouses)
     drones = [Drone(i, r, c, 0) for i in range(P.n_drones)]
     products = []
-    for o in P.orders:
+
+    kk = deepcopy(P.orders)
+    shuffle(kk)
+
+    for o in kk:
         for p in o.products:
             products.append((o, p))
 
@@ -69,12 +74,14 @@ def simulate(P):
                 weights.pop()
             in_order = in_order[:len(weights)]
 
-            # find a warehouse that has all the products
+            # find warehouses that have all the more possible products
             while in_order and len(warehouse_with_prods([first_prod] + in_order)) == 0:
                 in_order.pop()
 
             this_payload = [first_prod] + in_order
 
+            # Take the nearest drone, warehouse combination
+            # that could handle the order
             min_dist = None
             found_d, found_w = None, None
             for d in avail:
@@ -88,7 +95,7 @@ def simulate(P):
             avail.remove(d)
 
             # goto warehouse
-            b = d.busy + distance(w.row, w.col, d.row, d.col)
+            b = i + distance(w.row, w.col, d.row, d.col)
             for p in this_payload:
                 actions[i] = actions.get(i, []) + [Action(d.id, ActionType.LOAD, p, w.id, 1)]
                 W[w.id].products[p] -= 1

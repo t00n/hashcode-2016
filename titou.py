@@ -7,9 +7,6 @@ from math import sqrt, ceil
 from sys import stderr
 from solver import score
 
-Drone = namedtuple('Drone', ['id', 'row', 'col', 'busy'])
-
-
 def distance(x1, y1, x2, y2):
     return ceil(sqrt((x1-x2)**2 + (y1-y2)**2))
 
@@ -61,5 +58,4 @@ if __name__ == "__main__":
     from sys import argv
     r = simulate(parse(argv[1]))
     print len(r)
-    print "\n".join(map(str, r))
-    # print >>stderr, score(r)
+    print >>stderr, score(r)

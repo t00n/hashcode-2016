@@ -75,7 +75,8 @@ def simulate(P):
 
             this_payload = [first_prod] + in_order
 
-            w = warehouse_with_prods(this_payload)[0]
+            all_w = sorted(warehouse_with_prods(this_payload), key=lambda w: distance(w.row, w.col, d.row, d.col))
+            w = all_w[0]
 
             products = products[len(in_order):]
 

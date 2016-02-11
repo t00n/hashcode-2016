@@ -5,26 +5,27 @@ class ActionType:
     WAIT=3
 
 class Action:
-    def __init__(self, drone, type, item, dest):
+    def __init__(self, drone, type, item, dest, time):
         self.drone = drone
         self.type = type
         self.item = item
         self.dest = dest
+        self.time = time
 
 class Drone:
-    def __init__(self, row, col, available):
+    def __init__(self, row, col, busy):
         self.row = row
         self.col = col
-        self.available = available
+        self.busy = busy
 
 class Warehouse:
-    def __init__(self, row, col, products):
+    def __init__(self, id, row, col, products):
         self.row = row
         self.col = col
         self.products = products
 
 class Order:
-    def __init__(self, row, col, products):
+    def __init__(self, id, row, col, products):
         self.row = row
         self.col = col
         self.products = products

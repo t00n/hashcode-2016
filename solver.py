@@ -17,8 +17,8 @@ def score(actions):
         to_remove = []
         for action in actions:
             drone = drones[action.drone]
-            # if the drone for this action is available
-            if drone.available <= i:
+            # if the drone for this action is busy
+            if drone.busy <= i:
                 # get action destination
                 if action.type == ActionType.LOAD:
                     row = data.warehouses[action.dest].row
@@ -28,14 +28,14 @@ def score(actions):
                     col = data.warehouses[action.dest].col
                 # if drone is at destination, execute action
                 if drone.row == row and drone.col == col:
-                    drone.available += 1
+                    drone.busy += 1
                     if action.type == ActionType.LOAD:
                         data.warehouses[action.dest].products[action.item] -= 1
                     elif action.type == ActionType.DELIVER:
                         data.orders[action.dest].products.remove(action.item)
                     to_remove.append(action)
                 else: # if drone is not at destination, move it to destination and change availibility
-                    drone.available = i + distance((drone.row, drone.col), (row, col))
+                    drone.busy = i + distance((drone.row, drone.col), (row, col))
                     drone.row = row
                     drone.col = col
         for action in to_remove:

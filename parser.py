@@ -20,7 +20,7 @@ def parse(filename):
         for w in range(n_warehouses):
             row, col = map(int, r().split())
             products = map(int, r().split())
-            warehouses.append(Warehouse(row, col, products))
+            warehouses.append(Warehouse(w, row, col, products))
 
         n_orders = int(r())
         orders = []
@@ -28,7 +28,7 @@ def parse(filename):
             row, col = map(int, r().split())
             _ = int(r())
             products = map(int, r().split())
-            orders.append(Order(row, col, products))
+            orders.append(Order(i, row, col, products))
 
         return Problem(Products, warehouses, orders, rows, cols,
                        drones, deadline, max_payload)

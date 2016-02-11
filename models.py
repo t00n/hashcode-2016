@@ -17,7 +17,8 @@ class Action:
         return "%i %s %i %i %i" % (self.drone, t, self.dest, self.item, self.number)
 
 class Drone:
-    def __init__(self, row, col, busy):
+    def __init__(self, id, row, col, busy):
+        self.id = id
         self.row = row
         self.col = col
         self.busy = busy

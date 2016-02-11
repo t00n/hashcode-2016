@@ -12,7 +12,11 @@ next_turn = 0
 def distance(x, y):
     return math.sqrt((y[0] - x[0])**2 + (y[1] - x[1])**2)
 
+def order_score(t, T):
+    return (T - t) / (T * 100)
+
 def score(actions):
+    res = 0
     for i in range(data.deadline):
         to_remove = []
         for action in actions:
@@ -33,6 +37,8 @@ def score(actions):
                         data.warehouses[action.dest].products[action.item] -= 1
                     elif action.type == ActionType.DELIVER:
                         data.orders[action.dest].products.remove(action.item)
+                        if len(data.orders[action.dest].products) == 0:
+                            res += order_score(i, deadline)
                     to_remove.append(action)
                 else: # if drone is not at destination, move it to destination and change availibility
                     drone.busy = i + distance((drone.row, drone.col), (row, col))
@@ -40,7 +46,6 @@ def score(actions):
                     drone.col = col
         for action in to_remove:
             actions.remove(action)
-
-print score([Action(0, ActionType.LOAD, 815, 0), Action(1, ActionType.LOAD, 833, 0), Action(0, ActionType.DELIVER, 815, 0)])
+    return res
 
     

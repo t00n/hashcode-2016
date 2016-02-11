@@ -53,7 +53,7 @@ def simulate(P):
 
     for i in range(P.deadline):
         avail = list(filter(lambda x: x.busy <= i, drones))
-        for d in avail:
+        while avail:
             if len(products) == 0:
                 break
 
@@ -75,10 +75,17 @@ def simulate(P):
 
             this_payload = [first_prod] + in_order
 
-            all_w = sorted(warehouse_with_prods(this_payload), key=lambda w: distance(w.row, w.col, d.row, d.col))
-            w = all_w[0]
+            min_dist = None
+            found_d, found_w = None, None
+            for d in avail:
+                for w in warehouse_with_prods(this_payload):
+                    dist = distance(w.row, w.col, d.row, d.col)
+                    if min_dist is None or dist < min_dist:
+                        min_dist, found_d, found_w = dist, d, w
 
+            w, d = found_w, found_d
             products = products[len(in_order):]
+            avail.remove(d)
 
             # goto warehouse
             b = d.busy + distance(w.row, w.col, d.row, d.col)

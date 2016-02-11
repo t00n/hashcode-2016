@@ -4,6 +4,7 @@ from models import *
 from itertools import chain
 from copy import deepcopy
 from math import sqrt, ceil
+from solver import score
 
 Drone = namedtuple('Drone', ['id', 'row', 'col', 'busy'])
 
@@ -55,4 +56,4 @@ def simulate(P):
 
 if __name__ == "__main__":
     from sys import argv
-    print simulate(parse(argv[1]))
+    print score(simulate(parse(argv[1])))

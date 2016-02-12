@@ -24,7 +24,7 @@ def simulate(P):
     products = []
 
     kk = deepcopy(P.orders)
-    shuffle(kk)
+    # shuffle(kk)
 
     for o in kk:
         for p in o.products:
@@ -87,6 +87,7 @@ def simulate(P):
             for d in avail:
                 for w in warehouse_with_prods(this_payload):
                     dist = distance(w.row, w.col, d.row, d.col)
+                    dist += distance(o.row, o.col, w.row, w.col)
                     if min_dist is None or dist < min_dist:
                         min_dist, found_d, found_w = dist, d, w
 
